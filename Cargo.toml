@@ -1,6 +1,10 @@
 [workspace]
 members = ["client", "client-egui", "client-web", "common"]
 
-[dependencies]
+[workspace.dependencies]
 common = {path="common"}
 client = {path="client"}
+
+[workspace.package]
+edition = "2021"
+version ="0.1.0"
