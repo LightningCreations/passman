@@ -1,0 +1,6 @@
+[workspace]
+members = ["client", "client-egui", "client-web", "common"]
+
+[dependencies]
+common = {path="common"}
+client = {path="client"}
