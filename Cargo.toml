@@ -4,6 +4,8 @@ members = ["client", "client-egui", "client-web", "common"]
 [workspace.dependencies]
 common = {path="common"}
 client = {path="client"}
+async-trait = {version="0.1.74"}
+async-std = {version = "1.12.0"}
 
 [workspace.package]
 edition = "2021"

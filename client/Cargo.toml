@@ -7,3 +7,5 @@ edition.workspace = true
 
 [dependencies]
 common.workspace = true
+async-trait.workspace = true
+async-std.workspace = true
