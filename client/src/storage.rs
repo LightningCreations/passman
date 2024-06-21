@@ -1,10 +1,9 @@
 use crate::macros::async_trait;
 
 use async_std::io::Read;
-use common::{
-    error::{Error, Result},
-    uuid::Uuid,
-};
+use common::error::{Error, Result};
+
+use uuid::Uuid;
 
 #[async_trait]
 pub trait Storage {

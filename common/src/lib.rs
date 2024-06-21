@@ -1,2 +1,4 @@
+pub mod data;
 pub mod error;
-pub mod uuid;
+pub mod http;
+pub mod suite;
