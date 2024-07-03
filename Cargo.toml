@@ -11,6 +11,7 @@ serde = "1.0.198"
 serde_json="1.0.116"
 uuid={version="1.8.0",features=["serde"]}
 time={version="0.3.36", features=["serde", "serde-human-readable"]}
+indexmap = {version="2.2.6", features=["serde"]}
 
 [workspace.package]
 edition = "2021"

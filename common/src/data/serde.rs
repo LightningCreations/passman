@@ -4,7 +4,7 @@ use serde::{
     ser::{Serialize, Serializer},
 };
 
-use super::Bytes;
+use super::{Bytes, Version};
 
 impl Serialize for Bytes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -82,6 +82,61 @@ impl<'de> Deserialize<'de> for Bytes {
             deserializer.deserialize_str(BytesVisitor)
         } else {
             deserializer.deserialize_byte_buf(BytesVisitor)
+        }
+    }
+}
+
+impl Serialize for Version {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        if serializer.is_human_readable() {
+            let st = self.to_string();
+            serializer.serialize_str(&st)
+        } else {
+            serializer.serialize_u32(self.encoded())
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for Version {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        pub struct VersionVisitor;
+
+        impl<'de> Visitor<'de> for VersionVisitor {
+            type Value = Version;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("a version")
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: Error,
+            {
+                v.parse()
+                    .map_err(|_| E::invalid_value(Unexpected::Str(v), &self))
+            }
+
+            fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+            where
+                E: Error,
+            {
+                let v = v.try_into().map_err(|_| {
+                    E::invalid_value(Unexpected::Unsigned(v), &"An integer that is a valid u32")
+                })?;
+
+                Ok(Version::from_encoded(v))
+            }
+        }
+
+        if deserializer.is_human_readable() {
+            deserializer.deserialize_str(VersionVisitor)
+        } else {
+            deserializer.deserialize_u32(VersionVisitor)
         }
     }
 }

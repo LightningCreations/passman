@@ -15,6 +15,7 @@ pub const PROTOCOL_VERSION: Version = Version::from_parts(0, 1, 0);
 ///
 /// Returns information about the server
 #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
 pub struct Hello {
     /// Returns the unique ID of the server.
     pub server_id: Uuid,
@@ -91,6 +92,7 @@ pub mod acl {
     ///
     /// Requires: `Owner` global permission
     #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "kebab-case")]
     pub struct AclRow {
         pub subject: Uuid,
         pub action: String,
@@ -105,6 +107,7 @@ pub mod acl {
 /// Requires: Authed as user `<uuid>` or server admin
 ///
 pub mod user {
+    use indexmap::IndexMap;
     use serde::{Deserialize, Serialize};
     use uuid::Uuid;
 
@@ -125,6 +128,7 @@ pub mod user {
     /// Requires: Authed as user `<uuid>` or have ACL permission `WriteRootInfo`
     ///
     #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "kebab-case")]
     pub struct UserRootInfo {
         pub root_object: Uuid,
         pub root_key: Uuid,
@@ -137,6 +141,7 @@ pub mod user {
     /// Requires: Authenticated.
     ///
     #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "kebab-case")]
     pub struct UserPublicKey {
         pub pub_key: Bytes,
         pub pub_key_alg: AsymmetricCipherAlgorithm,
@@ -145,14 +150,49 @@ pub mod user {
     /// # Creating a New User
     /// `POST /users/new`
     #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "kebab-case")]
     pub struct NewUserRequest {
         pub user_address: String,
         pub initial_auth: UserAuth,
     }
 
     #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "kebab-case")]
     pub struct NewUserResponse {
         pub user_id: Uuid,
+    }
+
+    #[derive(Serialize, Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
+    #[serde(untagged)]
+    pub enum PreferenceValue {
+        Uuid(Uuid),
+        Bool(bool),
+        Integer(i64),
+        String(String),
+    }
+
+    /// ## Obtaining User Preferences Set
+    ///
+    /// `GET /users/<uuid>/prefs`
+    ///
+    /// Requires: Authenticated as `<uuid>` or have ACL permission `ReadClientPersistentStorage`
+    ///
+    /// ## Updating User Preferences Set
+    ///
+    /// `POST /users/<uuid>/prefs`
+    ///
+    /// Requires: Authenticated as `<uuid>` or have ACL permission `WriteClientPersistentStorage`
+    ///
+    /// ## Replacing User Preferences Set
+    ///
+    /// `PUT /users/<uuid>/prefs`
+    ///
+    /// Requires: Authenticated as `<uuid>` or have ACL permission `WriteClientPersistentStorage`
+    ///
+    #[derive(Serialize, Deserialize, Clone, Debug)]
+    pub struct UserPreferences {
+        #[serde(flatten)]
+        pub prefs: IndexMap<Uuid, PreferenceValue>,
     }
 }
 
@@ -240,6 +280,8 @@ pub mod item {
 
     use crate::suite::SymmetricCipherAlgorithm;
 
+    use super::acl::AclRow;
+
     /// ## Retrieve Item Key Information for a given key
     ///
     /// `GET /items/<item-uuid>/keys/<key-uuid>`
@@ -292,10 +334,20 @@ pub mod item {
     /// ## Retrieve Item Metadata
     ///
     /// `GET /items/<item-uuid>/metadata`
+    ///
+    /// Requires: ACL Permission
     pub struct ItemMetadata {
         pub content_type: String,
         pub mtime: PrimitiveDateTime,
         pub atime: PrimitiveDateTime,
         pub ctime: PrimitiveDateTime,
+    }
+
+    /// ## Create new Item
+    ///
+    /// `POST /items/new`
+    pub struct NewItemRequest {
+        pub content_type: String,
+        pub base_acl: Vec<AclRow>,
     }
 }

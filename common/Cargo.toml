@@ -11,3 +11,4 @@ serde.workspace = true
 uuid.workspace = true
 base64 = "0.22.1"
 time.workspace = true
+indexmap.workspace = true

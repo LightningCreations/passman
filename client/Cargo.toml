@@ -10,3 +10,4 @@ common.workspace = true
 async-trait.workspace = true
 async-std.workspace = true
 uuid.workspace = true
+reqwest = "0.12.5"
