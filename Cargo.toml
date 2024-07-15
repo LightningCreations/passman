@@ -1,5 +1,5 @@
 [workspace]
-members = ["client", "client-egui", "client-web", "common", "server"]
+members = ["client", "client-web", "common", "server"]
 
 [workspace.dependencies]
 common = {path="common"}
