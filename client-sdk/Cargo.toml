@@ -1,5 +1,5 @@
 [package]
-name = "client"
+name = "client-sdk"
 version.workspace = true
 edition.workspace = true
 

@@ -299,7 +299,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "client"
+name = "client-sdk"
 version = "0.1.0"
 dependencies = [
  "async-std",
@@ -310,17 +310,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "client-egui"
-version = "0.1.0"
-dependencies = [
- "client",
-]
-
-[[package]]
 name = "client-web"
 version = "0.1.0"
 dependencies = [
- "client",
+ "client-sdk",
 ]
 
 [[package]]

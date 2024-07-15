@@ -1,9 +1,9 @@
 [workspace]
-members = ["client", "client-web", "common", "server"]
+members = ["client-sdk", "client-web", "common", "server"]
 
 [workspace.dependencies]
 common = {path="common"}
-client = {path="client"}
+client-sdk = {path="client-sdk"}
 async-trait = {version="0.1.74"}
 async-std = {version = "1.12.0"}
 bytemuck = {version = "1.15.0", features=["min_const_generics", "derive"]}
