@@ -1,3 +1,4 @@
 # Summary
 
-- [Chapter 1](./chapter_1.md)
+## Client Side Model
+- [Item Interface Descriptions](client/items.md)
